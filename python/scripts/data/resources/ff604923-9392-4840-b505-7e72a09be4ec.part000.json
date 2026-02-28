@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "[身份标识 / Identity Context: role=\"user\" 的消息来自人类用户 白泽。 role=\"assistant\" 的消息来自 AI 助手 夜河阳。 重要：当白泽发出指令（如\"读取文件\"\"执行检查\"）时，执行这些操作的是夜河阳，不是白泽。助手展现的行为模式、工作流程、检查步骤必须归属于夜河阳，禁止将助手的行为归属给\"白泽\"。] [Language Context: This conversation is in Chinese. All memory summaries extracted from this conversation must be written in Chinese (中文).]"
+  },
+  {
+    "role": "user",
+    "content": "Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.\nCurrent time: Saturday, February 28th, 2026 — 04:15 (Asia/Shanghai)"
+  },
+  {
+    "role": "assistant",
+    "content": "我需要检查今天的记忆文件和相关状态。让我先查看记忆相关的文件。"
+  },
+  {
+    "role": "assistant",
+    "content": "让我检查一下项目状态和是否有需要追踪的事项："
+  },
+  {
+    "role": "assistant",
+    "content": "现在是凌晨 04:15（周六），属于夜间静默时段。\n\n**检查结果**：\n\n**系统状态**\n- 上次心跳检查：2026-02-25 23:29（约 53 小时前）\n- 安全检查：已过期（建议刷新）\n- 项目状态：\n  - memU 插件：正常运行\n  - CosyVoice TTS：正常\n  - NeuroSama：TTS + STT 完成，待摄像头集成\n\n**自省检查**\n- 无新错误记录\n- 上次会话完成了重要的上下文精简（40% 压缩）和 memU 策略确立\n- 路线图有多个计划方向，但没有紧急未决事项\n\n**结论**：凌晨时段，无紧急事项，不主动打扰。\n\nHEARTBEAT_OK"
+  }
+]

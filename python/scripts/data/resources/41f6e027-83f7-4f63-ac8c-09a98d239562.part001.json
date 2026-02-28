@@ -1,0 +1,10 @@
+[
+  {
+    "role": "system",
+    "content": "[身份标识 / Identity Context: role=\"user\" 的消息来自人类用户 白泽。 role=\"assistant\" 的消息来自 AI 助手 夜河阳。 重要：当白泽发出指令（如\"读取文件\"\"执行检查\"）时，执行这些操作的是夜河阳，不是白泽。助手展现的行为模式、工作流程、检查步骤必须归属于夜河阳，禁止将助手的行为归属给\"白泽\"。] [Language Context: This conversation is in Chinese. All memory summaries extracted from this conversation must be written in Chinese (中文).]"
+  },
+  {
+    "role": "user",
+    "content": "我更新了记忆系统，正在自动同步，检查一下是否能获得详细的时间记忆。"
+  }
+]

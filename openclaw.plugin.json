@@ -1,0 +1,140 @@
+{
+  "id": "memu-plugin",
+  "name": "memU Memory Plugin",
+  "description": "OpenClaw memory plugin powered by memU SDK",
+  "kind": "memory",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "embedding": {
+        "type": "object",
+        "description": "Embedding model configuration for vector search",
+        "properties": {
+          "provider": { "type": "string", "default": "openai" },
+          "baseUrl": { "type": "string", "default": "https://api.openai.com/v1" },
+          "apiKey": { "type": "string" },
+          "model": { "type": "string", "default": "text-embedding-3-small" }
+        }
+      },
+      "extraction": {
+        "type": "object",
+        "description": "LLM configuration for memory extraction",
+        "properties": {
+          "provider": { "type": "string", "default": "openai" },
+          "baseUrl": { "type": "string", "default": "https://api.openai.com/v1" },
+          "apiKey": { "type": "string" },
+          "model": { "type": "string", "default": "gpt-4o-mini" }
+        }
+      },
+      "language": {
+        "type": "string",
+        "default": "auto",
+        "description": "Output language for memory summaries. Options: 'auto' (follow input), 'zh' (Chinese), 'en' (English), or any language name."
+      },
+      "dataDir": {
+        "type": "string",
+        "default": "~/.openclaw/memUdata",
+        "description": "Directory for memU database and files"
+      },
+      "ingest": {
+        "type": "object",
+        "properties": {
+          "includeDefaultPaths": {
+            "type": "boolean",
+            "default": true,
+            "description": "If true, ingest OpenClaw workspace root *.md and workspace/memory/*.md by default."
+          },
+          "extraPaths": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": [],
+            "description": "Extra directories/files to ingest Markdown from."
+          },
+          "filterScheduledSystemMessages": {
+            "type": "boolean",
+            "default": true,
+            "description": "Filter large system-injected scheduled payloads before conversion."
+          },
+          "scheduledSystemMode": {
+            "type": "string",
+            "enum": ["event", "drop", "keep"],
+            "default": "event",
+            "description": "How to handle scheduled system payloads: event (compact marker), drop, keep."
+          },
+          "scheduledSystemMinChars": {
+            "type": "integer",
+            "minimum": 64,
+            "default": 500,
+            "description": "Minimum message length to classify as scheduled payload."
+          }
+        },
+        "additionalProperties": true
+      },
+      "retrieval": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["fast", "full"],
+            "default": "fast",
+            "description": "Retrieval mode. fast: vector-only. full: progressive retrieval with LLM checks."
+          },
+          "contextMessages": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 3,
+            "description": "Number of recent chat messages for retrieval context (mode=full)."
+          },
+          "defaultCategoryQuota": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Default category result quota for memory_search."
+          },
+          "defaultItemQuota": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Default item result quota for memory_search."
+          },
+          "outputMode": {
+            "type": "string",
+            "enum": ["compact", "full"],
+            "default": "compact",
+            "description": "Tool output mode. compact: minimal fields. full: full JSON envelope."
+          }
+        },
+        "additionalProperties": true
+      },
+      "sync": {
+        "type": "object",
+        "properties": {
+          "debounceSeconds": {
+            "type": "number",
+            "default": 20,
+            "description": "Debounce interval for file change detection."
+          },
+          "idleFlushSeconds": {
+            "type": "number",
+            "default": 1800,
+            "description": "Idle time before flushing staged session tail."
+          },
+          "memorizeTimeoutSeconds": {
+            "type": "integer",
+            "default": 600,
+            "description": "Timeout for memorize API calls."
+          },
+          "rateLimitBackoffSeconds": {
+            "type": "integer",
+            "default": 60,
+            "description": "Base backoff time on rate limit errors."
+          },
+          "rateLimitBackoffMaxSeconds": {
+            "type": "integer",
+            "default": 900,
+            "description": "Maximum backoff time on rate limit errors."
+          }
+        }
+      }
+    }
+  }
+}

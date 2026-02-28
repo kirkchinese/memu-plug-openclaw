@@ -1,0 +1,26 @@
+{
+  "name": "memu-plugin",
+  "version": "1.0.0",
+  "description": "OpenClaw memory plugin powered by memU SDK",
+  "type": "module",
+  "main": "index.ts",
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "openclaw",
+    "plugin",
+    "memory",
+    "memu"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
