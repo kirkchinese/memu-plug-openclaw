@@ -1,7 +1,7 @@
 # memU Plugin for OpenClaw
 
 > **致谢与声明**
-> 本插件是在 [NevaMind-AI/memU](https://github.com/NevaMind-AI/memU) 基础上的windows移植与部分优化版本，请关注原作者。
+> 本插件是在 [memU Engine for OpenClaw](https://github.com/duxiaoxiong/memu-engine-for-OpenClaw) 基础上的windows移植与部分优化版本，请关注原作者。
 > 本插件在其基础上做了以下改进：
 > - **Windows 原生支持**（锁文件、路径、信号处理均适配 Windows）
 > - 基于 `uv` 的 Python 环境管理，无需手动 virtualenv
