@@ -19,6 +19,7 @@ import socket
 import sqlite3
 import subprocess
 import sys
+import threading
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -36,6 +37,8 @@ DATA_DIR = os.environ.get(
 DB_PATH = os.path.join(DATA_DIR, "memu.db")
 STATE_FILE = os.path.join(DATA_DIR, "docs_ingest_state.json")
 PORT = int(os.environ.get("MEMU_DASHBOARD_PORT", "8377"))
+# PID of the parent OpenClaw Node.js process (set by index.ts at spawn time).
+PARENT_PID = int(os.getenv("MEMU_PARENT_PID", "0") or "0")
 
 app = FastAPI(title="memU Dashboard", docs_url=None, redoc_url=None)
 
@@ -900,4 +903,24 @@ if __name__ == "__main__":
 
     print(f"[信息] memU 控制台启动于 http://127.0.0.1:{PORT}")
     print(f"[信息] 数据库：{DB_PATH}")
+
+    # Orphan guard: if the parent OpenClaw process exits we shut down automatically.
+    if PARENT_PID > 0:
+        import time as _time
+        print(f"[信息] 孤儿守护已启动，监控父进程 PID {PARENT_PID}")
+
+        def _parent_watchdog() -> None:
+            while True:
+                _time.sleep(5)
+                try:
+                    os.kill(PARENT_PID, 0)
+                except PermissionError:
+                    pass  # Process exists but access denied — keep running
+                except (ProcessLookupError, OSError):
+                    print(f"[信息] 父进程 {PARENT_PID} 已退出，关闭控制台。")
+                    os._exit(0)
+
+        t = threading.Thread(target=_parent_watchdog, daemon=True)
+        t.start()
+
     uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="warning")

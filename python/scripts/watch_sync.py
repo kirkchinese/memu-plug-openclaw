@@ -54,6 +54,9 @@ _init_env()
 SESSIONS_DIR = os.getenv("OPENCLAW_SESSIONS_DIR")
 MEMU_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCK_FILE = os.path.join(tempfile.gettempdir(), "memu_sync.lock")
+# PID of the parent OpenClaw Node.js process (set by index.ts at spawn time).
+# Used for orphan detection: if the parent exits unexpectedly, we self-terminate.
+PARENT_PID = int(os.getenv("MEMU_PARENT_PID", "0") or "0")
 
 
 # --- PID-Aware Lock Management ---
@@ -529,10 +532,24 @@ def run_daemon():
 
     observer.start()
     print(f"[INFO] Watcher started. Idle flush: {flush_idle_seconds}s")
-    
+    if PARENT_PID > 0:
+        print(f"[INFO] Orphan guard active: watching parent PID {PARENT_PID}")
+
+    last_parent_check = 0
+
     try:
         while True:
             time.sleep(1)
+            # Orphan guard: self-terminate if the parent OpenClaw process has exited.
+            # Checked every 5 s to avoid overhead; uses existing _pid_alive() helper.
+            now_i = int(time.time())
+            if PARENT_PID > 0 and now_i - last_parent_check >= 1:
+                last_parent_check = now_i
+                if not _pid_alive(PARENT_PID):
+                    print(f"[INFO] Parent process {PARENT_PID} has exited; shutting down watcher.")
+                    observer.stop()
+                    _release_lock(watcher_lock_name, watcher_lock_fd)
+                    raise SystemExit(0)
             # Periodic idle-flush trigger with minimal overhead:
             # - does NOT call auto_sync unless the main session file has been idle >= flush_idle_seconds
             # - re-resolves main session file occasionally in case sessions.json changes

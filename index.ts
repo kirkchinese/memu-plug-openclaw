@@ -367,6 +367,7 @@ const memuPlugin = {
         PYTHONIOENCODING: "utf-8",
         MEMU_DATA_DIR: dataDir,
         MEMU_DASHBOARD_PORT: dashboardPort,
+        MEMU_PARENT_PID: String(process.pid),
       };
 
       const scriptPath = path.join(pythonRoot, "scripts", "dashboard.py");
@@ -503,6 +504,7 @@ const memuPlugin = {
           Number.isFinite(Number(ingestConfig.scheduledSystemMinChars))
             ? String(Math.max(64, Math.trunc(Number(ingestConfig.scheduledSystemMinChars))))
             : "500",
+        MEMU_PARENT_PID: String(process.pid),
       };
 
       const scriptPath = path.join(pythonRoot, "scripts", "watch_sync.py");
