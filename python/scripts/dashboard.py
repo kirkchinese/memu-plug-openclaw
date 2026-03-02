@@ -912,13 +912,25 @@ if __name__ == "__main__":
         def _parent_watchdog() -> None:
             while True:
                 _time.sleep(5)
-                try:
-                    os.kill(PARENT_PID, 0)
-                except PermissionError:
-                    pass  # Process exists but access denied — keep running
-                except (ProcessLookupError, OSError):
-                    print(f"[信息] 父进程 {PARENT_PID} 已退出，关闭控制台。")
-                    os._exit(0)
+                if sys.platform == "win32":
+                    try:
+                        out = subprocess.run(
+                            ["tasklist", "/FI", f"PID eq {PARENT_PID}", "/NH"],
+                            capture_output=True, text=True, timeout=5
+                        ).stdout
+                        if str(PARENT_PID) not in out:
+                            print(f"[信息] 父进程 {PARENT_PID} 已退出，关闭控制台。")
+                            os._exit(0)
+                    except Exception:
+                        pass
+                else:
+                    try:
+                        os.kill(PARENT_PID, 0)
+                    except PermissionError:
+                        pass  # Process exists but access denied — keep running
+                    except (ProcessLookupError, OSError):
+                        print(f"[信息] 父进程 {PARENT_PID} 已退出，关闭控制台。")
+                        os._exit(0)
 
         t = threading.Thread(target=_parent_watchdog, daemon=True)
         t.start()
